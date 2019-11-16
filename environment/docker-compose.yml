@@ -1,0 +1,43 @@
+version: '2'
+
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+          gateway: 172.19.0.1
+
+services:
+
+  web:
+    build: images/apache
+    image: apache_php
+    restart: always
+    container_name: web
+    ports:
+      - "80:80"
+    volumes:
+      - ../:/var/www/html
+      - ./images/apache/start.sh:/build/start.sh
+      - ./images/apache/vhosts:/build/vhosts
+      - ./images/apache/vhosts:/etc/apache2/sites-available
+      - ./images/apache/configuration/php.ini:/etc/php/7.2/apache2/php.ini
+      - ./images/apache/configuration/php.ini:/etc/php/7.2/cli/php.ini
+    extra_hosts:
+      - "db.lv.local:172.19.0.100"
+      - "api.lv.local.conf:172.19.0.2"
+    networks:
+      custom_network:
+        ipv4_address: 172.19.0.2
+#
+  db:
+    build: images/mysql
+    image: mysql
+    restart: always
+    container_name: db
+    ports:
+      - "3306:3306"
+    networks:
+      custom_network:
+        ipv4_address: 172.19.0.100
