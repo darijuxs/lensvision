@@ -2,7 +2,12 @@
 
 namespace App\Controller\Api;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Request\LenseOption;
+use App\Service\Validator\ValidatorTrait;
+use App\Service\Serializer\SerializerTrait;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -12,17 +17,30 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/api", name="api_")
  */
-class ApiController extends AbstractController
+class ApiController extends AbstractApiController
 {
+    use ValidatorTrait;
+    use SerializerTrait;
+
     /**
      * @Route(name="index")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->json(
-            [
-                'ok'
-            ]
-        );
+
+        $data = [
+            'option1' => 'true',
+        ];
+
+        $lense = $this->denormalize($data, LenseOption::class);
+        if (!$this->validate($lense)) {
+            return $this->json($this->getErrors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->json($lense);
     }
 }

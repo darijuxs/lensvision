@@ -23,5 +23,11 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Service\Serializer\Normalizer\NestedObjectNormalizer:
+        arguments: ["@serializer.mapping.class_metadata_factory", "@serializer.name_converter.camel_case_to_snake_case", "@serializer.property_accessor", "@property_info"]
+        calls:
+            - [setAnnotationReader, ['@annotations.reader']]
+        tags: [serializer.normalizer]
+
+    App\Service\Serializer\Normalizer\CollectionNormalizer:
+        tags: [serializer.normalizer]
