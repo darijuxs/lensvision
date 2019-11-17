@@ -3,7 +3,8 @@
 namespace App\Entity\Request;
 
 use App\Service\Serializer\NestedObjectInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Service\Validator\Constraints as CustomAssert;
+use App\Consts\Option;
 
 /**
  * Class LenseOption
@@ -13,59 +14,61 @@ use Symfony\Component\Validator\Constraints as Assert;
 class LenseOption implements NestedObjectInterface
 {
     /**
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *      min = 2,
-     *      max = 4,
-     *      minMessage = "Your first name must be at least {{ limit }} characters long",
-     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     * @CustomAssert\LenseOption(
+     *     type=Option::TYPE_1,
+     *     message="First parameter value not found",
      * )
      *
-     * @var string|null
+     * @var int|null
      */
-    private $option1;
+    private $parameter1;
 
     /**
-     * @var string|null
+     * @CustomAssert\LenseOption(
+     *     type=Option::TYPE_2,
+     *     message="Second parameter value not found",
+     * )
+     *
+     * @var int|null
      */
-    private $option2;
+    private $parameter2;
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getOption1(): ?string
+    public function getParameter1(): ?int
     {
-        return $this->option1;
+        return $this->parameter1;
     }
 
     /**
-     * @param string|null $option1
+     * @param int|null $parameter1
      *
      * @return LenseOption
      */
-    public function setOption1(?string $option1): LenseOption
+    public function setParameter1(?int $parameter1): LenseOption
     {
-        $this->option1 = $option1;
+        $this->parameter1 = $parameter1;
 
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getOption2(): ?string
+    public function getParameter2(): ?int
     {
-        return $this->option2;
+        return $this->parameter2;
     }
 
     /**
-     * @param string|null $option2
+     * @param int|null $parameter2
      *
      * @return LenseOption
      */
-    public function setOption2(?string $option2): LenseOption
+    public function setParameter2(?int $parameter2): LenseOption
     {
-        $this->option2 = $option2;
+        $this->parameter2 = $parameter2;
 
         return $this;
     }

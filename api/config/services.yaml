@@ -31,3 +31,12 @@ services:
 
     App\Service\Serializer\Normalizer\CollectionNormalizer:
         tags: [serializer.normalizer]
+
+    App\Service\Lense\Options:
+        arguments: ["@doctrine.orm.default_entity_manager"]
+
+    #Validatros
+    App\Service\Validator\Constraints\LenseOptionValidator:
+        arguments: ['@doctrine.orm.entity_manager']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }

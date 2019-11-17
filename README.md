@@ -15,4 +15,7 @@
 8. go to /var/www/html/api and run composer install
 9. got to /etc/apache2/sites-available and run a2ensite api.pm.local.conf, service apache2 reload (@todo should be run automatically)
 
-10. create database - php bin/console doctrine:database:create
+10. create database commands:
+    php bin/console doctrine:database:create
+    php bin/console doctrine:schema:create
+    php bin/console doctrine:migrations:migrate

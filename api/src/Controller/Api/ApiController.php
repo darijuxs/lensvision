@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Request\LenseOption;
+use App\Service\Lense\Options;
 use App\Service\Validator\ValidatorTrait;
 use App\Service\Serializer\SerializerTrait;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,24 +24,25 @@ class ApiController extends AbstractApiController
     use SerializerTrait;
 
     /**
-     * @Route(name="index")
+     * @Route("/v1", name="index")
      *
      * @param Request $request
+     * @param Options $options
      *
      * @return JsonResponse
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(Request $request)
+    public function index(Request $request, Options $options)
     {
-
-        $data = [
-            'option1' => 'true',
-        ];
-
-        $lense = $this->denormalize($data, LenseOption::class);
-        if (!$this->validate($lense)) {
+        $data = json_decode($request->getContent(), true);
+        $lenseRequest = $this->denormalize($data, LenseOption::class);
+        if (!$this->validate($lenseRequest)) {
             return $this->json($this->getErrors(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return $this->json($lense);
+        $lenseOptionValues = $options->getGroupedValues($lenseRequest);
+
+        return $this->json($lenseOptionValues);
     }
 }
