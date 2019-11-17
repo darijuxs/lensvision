@@ -19,3 +19,10 @@
     php bin/console doctrine:database:create
     php bin/console doctrine:schema:create
     php bin/console doctrine:migrations:migrate
+    
+11. api endpoint 
+    http://api.lv.local/api/v2
+    http://api.lv.local/api/v2
+    
+    available parameters
+    parameter1 and/or parameter2
