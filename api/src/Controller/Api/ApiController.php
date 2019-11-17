@@ -24,7 +24,7 @@ class ApiController extends AbstractApiController
     use SerializerTrait;
 
     /**
-     * @Route("/v1", name="index")
+     * @Route("/v1", name="v1")
      *
      * @param Request $request
      * @param Options $options
@@ -33,7 +33,7 @@ class ApiController extends AbstractApiController
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(Request $request, Options $options)
+    public function v1(Request $request, Options $options)
     {
         $data = json_decode($request->getContent(), true);
         $lenseRequest = $this->denormalize($data, LenseOption::class);
@@ -42,6 +42,31 @@ class ApiController extends AbstractApiController
         }
 
         $lenseOptionValues = $options->getGroupedValues($lenseRequest);
+
+        return $this->json($lenseOptionValues);
+    }
+
+    /**
+     * @Route("/v2", name="v2")
+     *
+     * @param Request $request
+     * @param Options $options
+     *
+     * @return JsonResponse
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function v2(Request $request, Options $options)
+    {
+        $data = json_decode($request->getContent(), true);
+        $lenseRequest = $this->denormalize($data, LenseOption::class);
+        if (!$this->validate($lenseRequest)) {
+            return $this->json($this->getErrors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $lenseOptionValues = $options
+            ->setVersion(2)
+            ->getGroupedValues($lenseRequest);
 
         return $this->json($lenseOptionValues);
     }

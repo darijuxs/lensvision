@@ -24,15 +24,39 @@ class Options
     private $optionRules;
 
     /**
+     * @var OptionRules2
+     */
+    private $optionRules2;
+
+    /**
+     * @var int
+     */
+    private $version;
+
+    /**
      * Options constructor.
      *
      * @param EntityManager $em
      * @param OptionRules $optionRules
+     * @param OptionRules2 $optionRules2
      */
-    public function __construct(EntityManager $em, OptionRules $optionRules)
+    public function __construct(EntityManager $em, OptionRules $optionRules, OptionRules2 $optionRules2)
     {
         $this->em = $em;
         $this->optionRules = $optionRules;
+        $this->optionRules2 = $optionRules2;
+    }
+
+    /**
+     * @param int $version
+     *
+     * @return Options
+     */
+    public function setVersion(int $version): Options
+    {
+        $this->version = $version;
+
+        return $this;
     }
 
     /**
@@ -100,7 +124,16 @@ class Options
             $type2 = $lenseOption ? $lenseOption->getType() : null;
         }
 
-        $availableOptionTypes = $this->optionRules->getAvailableTypes($type1, $type2);
+        //@todo create factory
+        switch ($this->version) {
+            case 2:
+                $availableOptionTypes = $this->optionRules2->getAvailableTypes($type1, $type2);
+                break;
+
+            default:
+                $availableOptionTypes = $this->optionRules->getAvailableTypes($type1, $type2);
+                break;
+        }
 
         return $availableOptionTypes;
     }
